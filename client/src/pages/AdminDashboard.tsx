@@ -25,6 +25,8 @@ import {
   Users,
   MessageSquare,
   Sparkles,
+  Lock,
+  Shield,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -33,6 +35,7 @@ import {
   servicesApi,
   galleryApi,
   settingsApi,
+  authApi,
 } from '../services/api';
 import {
   Booking,
@@ -97,6 +100,12 @@ export const AdminDashboard: React.FC = () => {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [settingsLoading, setSettingsLoading] = useState<boolean>(false);
   const [savingSettings, setSavingSettings] = useState<boolean>(false);
+
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [changingPassword, setChangingPassword] = useState<boolean>(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -283,6 +292,30 @@ export const AdminDashboard: React.FC = () => {
       showToast(err.message || 'Failed to save settings.', 'error');
     } finally {
       setSavingSettings(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      showToast('New passwords do not match.', 'error');
+      return;
+    }
+    if (newPassword.trim().length < 8) {
+      showToast('New password must be at least 8 characters long.', 'error');
+      return;
+    }
+    setChangingPassword(true);
+    try {
+      await authApi.changePassword(currentPassword, newPassword);
+      showToast('Password updated and secured successfully!', 'success');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      showToast(err.message || 'Failed to update password.', 'error');
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -905,8 +938,82 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                 </form>
               )}
+
+            {/* Administrator Security & Password Change */}
+            <div className="bg-white rounded-2xl border border-gold-500/20 shadow-sm p-6 space-y-4">
+              <div className="flex items-center space-x-2 border-b border-gray-100 pb-3">
+                <Shield className="w-5 h-5 text-gold-600" />
+                <div>
+                  <h3 className="font-serif text-base font-bold text-maroon-950">
+                    Security & Administrator Password
+                  </h3>
+                  <p className="text-[11px] text-gray-500">
+                    Update your secret admin password. Passwords are cryptographically salted and hashed using Bcrypt.
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-4 max-w-xl">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                    Current Password *
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="••••••••••••"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-xs focus:border-gold-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                      New Password * (Min 8 chars)
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      minLength={8}
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-xs focus:border-gold-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                      Confirm New Password *
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      minLength={8}
+                      placeholder="Re-enter new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full px-3.5 py-2 rounded-xl border border-gray-300 text-xs focus:border-gold-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={changingPassword}
+                    className="px-6 py-2.5 rounded-xl text-xs font-bold text-maroon-950 bg-gold-btn shadow-gold-glow hover:scale-[1.01] transition disabled:opacity-50 flex items-center space-x-2"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>{changingPassword ? 'Securing Password...' : 'Update & Secure Password'}</span>
+                  </button>
+                </div>
+              </form>
             </div>
-          )}
+          </div>
+        )}
         </main>
       </div>
 

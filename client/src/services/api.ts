@@ -192,6 +192,13 @@ export const authApi = {
     return res.user;
   },
 
+  changePassword: async (currentPassword: string, newPassword: string): Promise<void> => {
+    await apiFetch<{ success: boolean; message: string }>('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+  },
+
   logout: () => {
     authStorage.removeToken();
   },
