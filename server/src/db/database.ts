@@ -125,16 +125,27 @@ export function initDatabase() {
 }
 
 function seedData() {
-  // Check if admin exists
-  const adminExists = db.prepare('SELECT id FROM profiles WHERE email = ?').get('admin@tanyaevents.com');
-  if (!adminExists) {
-    console.log('[Database] Seeding default admin user...');
-    const salt = bcrypt.genSaltSync(10);
-    const passwordHash = bcrypt.hashSync('Admin@TanyaEvents2026!', salt);
-    db.prepare(`
-      INSERT INTO profiles (id, email, password_hash, full_name, role)
-      VALUES (?, ?, ?, ?, ?)
-    `).run('adm-001', 'admin@tanyaevents.com', passwordHash, 'Tanya Events Administrator', 'admin');
+  // Check and seed admin users
+  const adminEmails = [
+    { email: 'admin@tanyaevents.com', name: 'Tanya Events Administrator' },
+    { email: 'tanyaevents.booking@gmail.com', name: 'Tanya Events Office' },
+    { email: 'ankit@gmail.com', name: 'Ankit Kumar (Admin)' },
+    { email: 'ankitkumararwal24@gmail.com', name: 'Ankit Kumar (Admin)' }
+  ];
+
+  const salt = bcrypt.genSaltSync(10);
+  const passwordHash = bcrypt.hashSync('Admin@TanyaEvents2026!', salt);
+
+  for (const admin of adminEmails) {
+    const exists = db.prepare('SELECT id FROM profiles WHERE email = ?').get(admin.email);
+    if (!exists) {
+      console.log(`[Database] Seeding admin user: ${admin.email}`);
+      const id = 'adm-' + Math.random().toString(36).substring(2, 9);
+      db.prepare(`
+        INSERT INTO profiles (id, email, password_hash, full_name, role)
+        VALUES (?, ?, ?, ?, ?)
+      `).run(id, admin.email, passwordHash, admin.name, 'admin');
+    }
   }
 
   // Seed Services if empty

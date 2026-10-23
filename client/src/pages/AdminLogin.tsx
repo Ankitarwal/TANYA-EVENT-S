@@ -9,8 +9,8 @@ export const AdminLogin: React.FC = () => {
   const { login, isAuthenticated } = useAuth();
   const { showToast } = useToast();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@tanyaevents.com');
+  const [password, setPassword] = useState('Admin@TanyaEvents2026!');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +20,13 @@ export const AdminLogin: React.FC = () => {
       navigate('/admin/dashboard');
     }
   }, [isAuthenticated, navigate]);
+
+  const setCredentials = (accEmail: string, accPass: string) => {
+    setEmail(accEmail);
+    setPassword(accPass);
+    setError(null);
+    showToast(`Loaded credentials for ${accEmail}`, 'info');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +123,7 @@ export const AdminLogin: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-2xl text-sm font-bold text-maroon-950 bg-gold-btn shadow-gold-glow hover:scale-[1.01] transition disabled:opacity-50 flex items-center justify-center space-x-2"
+              className="w-full py-3.5 rounded-2xl text-sm font-bold text-maroon-950 bg-gold-btn shadow-gold-glow hover:scale-[1.01] transition disabled:opacity-50 flex items-center justify-center space-x-2 cursor-pointer"
             >
               {loading ? (
                 <>
@@ -132,14 +139,48 @@ export const AdminLogin: React.FC = () => {
             </button>
           </form>
 
-          {/* Seed Info Hint for Reviewers */}
-          <div className="pt-4 border-t border-maroon-800/80 text-center">
-            <p className="text-[11px] text-gray-400">
-              Initial administrator access is pre-configured for verification.
+          {/* Quick 1-Click Auto Fill Admin Options */}
+          <div className="pt-4 border-t border-maroon-800/80 space-y-2.5">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-gold-300 text-center">
+              ⚡ Quick 1-Click Login Credentials
             </p>
-            <p className="text-[11px] text-gold-400 font-mono mt-1">
-              admin@tanyaevents.com / Admin@TanyaEvents2026!
-            </p>
+            <div className="grid grid-cols-1 gap-2">
+              <button
+                type="button"
+                onClick={() => setCredentials('admin@tanyaevents.com', 'Admin@TanyaEvents2026!')}
+                className="w-full text-left px-3 py-2 rounded-xl bg-maroon-900/40 hover:bg-maroon-800/60 border border-gold-500/20 text-xs flex items-center justify-between transition group"
+              >
+                <div>
+                  <div className="font-semibold text-gold-200 group-hover:text-gold-300">admin@tanyaevents.com</div>
+                  <div className="text-[10px] text-gray-400">Password: Admin@TanyaEvents2026!</div>
+                </div>
+                <span className="text-[10px] text-gold-400 font-bold bg-maroon-950 px-2 py-0.5 rounded border border-gold-500/30">Auto-fill</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCredentials('tanyaevents.booking@gmail.com', 'Admin@TanyaEvents2026!')}
+                className="w-full text-left px-3 py-2 rounded-xl bg-maroon-900/40 hover:bg-maroon-800/60 border border-gold-500/20 text-xs flex items-center justify-between transition group"
+              >
+                <div>
+                  <div className="font-semibold text-gold-200 group-hover:text-gold-300">tanyaevents.booking@gmail.com</div>
+                  <div className="text-[10px] text-gray-400">Password: Admin@TanyaEvents2026! / admin</div>
+                </div>
+                <span className="text-[10px] text-gold-400 font-bold bg-maroon-950 px-2 py-0.5 rounded border border-gold-500/30">Auto-fill</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCredentials('ankit@gmail.com', 'Admin@TanyaEvents2026!')}
+                className="w-full text-left px-3 py-2 rounded-xl bg-maroon-900/40 hover:bg-maroon-800/60 border border-gold-500/20 text-xs flex items-center justify-between transition group"
+              >
+                <div>
+                  <div className="font-semibold text-gold-200 group-hover:text-gold-300">ankit@gmail.com</div>
+                  <div className="text-[10px] text-gray-400">Password: Admin@TanyaEvents2026! / admin</div>
+                </div>
+                <span className="text-[10px] text-gold-400 font-bold bg-maroon-950 px-2 py-0.5 rounded border border-gold-500/30">Auto-fill</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
