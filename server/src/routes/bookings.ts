@@ -212,7 +212,8 @@ router.get('/lookup/:reference', (req: Request, res: Response) => {
 
   try {
     let query = 'SELECT * FROM bookings WHERE booking_reference = ?';
-    const params: any[] = [reference.trim().toUpperCase()];
+    const refStr = Array.isArray(reference) ? reference[0] : (reference || '');
+    const params: any[] = [refStr.trim().toUpperCase()];
 
     if (phone) {
       query += ' AND phone LIKE ?';
