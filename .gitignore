@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production builds
+dist/
+*/dist/
+
+# Environment configuration
+.env
+.env.local
+.env.*.local
+!.env.example
+!server/.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Database temporary WAL and SHM files
+server/data/*.db-wal
+server/data/*.db-shm
+server/data/*.sqlite-wal
+server/data/*.sqlite-shm
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

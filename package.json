@@ -1,0 +1,26 @@
+{
+  "name": "tanya-events-web",
+  "version": "1.0.0",
+  "description": "TANYA EVENT'S — Premium Event Planning & Booking Web Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"magenta,cyan\" \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "build:server": "npm --prefix server run build",
+    "start": "npm --prefix server run start"
+  },
+  "keywords": [
+    "tanya-events",
+    "wedding-planning",
+    "pandal-and-caterers",
+    "catering",
+    "event-management"
+  ],
+  "author": "TANYA EVENT'S",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}
